@@ -13,11 +13,10 @@ const initialState: TProfileOrdersState = {
   isLoading: false
 };
 
-export const fetchProfileOrders = createAsyncThunk<
-  TOrder[]
->('profileOrders/fetchAll', async () => {
-  return getOrdersApi();
-});
+export const fetchProfileOrders = createAsyncThunk<TOrder[]>(
+  'profileOrders/fetchAll',
+  async () => getOrdersApi()
+);
 
 const profileOrdersSlice = createSlice({
   name: 'profileOrders',

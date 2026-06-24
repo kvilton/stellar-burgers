@@ -52,21 +52,18 @@ export const registerUser = createAsyncThunk<TUser, TRegisterData>(
   }
 );
 
-export const getUser = createAsyncThunk<TUser>(
-  'user/getUser',
-  async () => {
-    const response = await getUserApi();
+export const getUser = createAsyncThunk<TUser>('user/getUser', async () => {
+  const response = await getUserApi();
+  return response.user;
+});
+
+export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
+  'user/updateUser',
+  async (data) => {
+    const response = await updateUserApi(data);
     return response.user;
   }
 );
-
-export const updateUser = createAsyncThunk<
-  TUser,
-  Partial<TRegisterData>
->('user/updateUser', async (data) => {
-  const response = await updateUserApi(data);
-  return response.user;
-});
 
 export const logoutUser = createAsyncThunk<void>(
   'user/logoutUser',

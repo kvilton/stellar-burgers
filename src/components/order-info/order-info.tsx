@@ -1,11 +1,11 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { TIngredient } from '@utils-types';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { useSelector } from '../../services/store';
-import { getOrderByNumberApi } from '../../utils/burger-api';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchOrderByNumber } from '../../services/slices/orderSlice';
 
 type TIngredientsWithCount = {
   [key: string]: TIngredient & { count: number };
@@ -13,26 +13,25 @@ type TIngredientsWithCount = {
 
 export const OrderInfo: FC = () => {
   const { number } = useParams();
-  const ingredients = useSelector((state) => state.ingredients.ingredients);
+  const dispatch = useDispatch();
 
-  const [orderData, setOrderData] = useState<unknown>(null);
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
+  const orderData = useSelector((state) => state.order.currentOrder);
 
   useEffect(() => {
     if (number) {
-      getOrderByNumberApi(Number(number)).then((data) => {
-        setOrderData(data.orders[0]);
-      });
+      dispatch(fetchOrderByNumber(Number(number)));
     }
-  }, [number]);
+  }, [dispatch, number]);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) {
       return null;
     }
 
-    const date = new Date((orderData as any).createdAt);
+    const date = new Date(orderData.createdAt);
 
-    const ingredientsInfo = (orderData as any).ingredients.reduce(
+    const ingredientsInfo = orderData.ingredients.reduce(
       (acc: TIngredientsWithCount, ingredientId: string) => {
         if (!acc[ingredientId]) {
           const ingredient = ingredients.find(
@@ -54,15 +53,13 @@ export const OrderInfo: FC = () => {
       {}
     );
 
-    const total = (
-      Object.values(ingredientsInfo) as Array<TIngredient & { count: number }>
-    ).reduce(
+    const total = Object.values(ingredientsInfo).reduce(
       (sum, ingredient) => sum + ingredient.price * ingredient.count,
       0
     );
 
     return {
-      ...(orderData as any),
+      ...orderData,
       ingredientsInfo,
       date,
       total
