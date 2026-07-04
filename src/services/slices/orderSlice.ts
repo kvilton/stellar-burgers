@@ -1,10 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TOrder } from '@utils-types';
-import {
-  getOrderByNumberApi,
-  orderBurgerApi
-} from '../../utils/burger-api';
+import { getOrderByNumberApi, orderBurgerApi } from '../../utils/burger-api';
 
 type TOrderState = {
   orderRequest: boolean;
@@ -32,7 +29,6 @@ export const fetchOrderByNumber = createAsyncThunk<TOrder, number>(
   'order/fetchByNumber',
   async (number) => {
     const response = await getOrderByNumberApi(number);
-
     return response.orders[0];
   }
 );
@@ -50,27 +46,17 @@ const orderSlice = createSlice({
       .addCase(createOrder.pending, (state) => {
         state.orderRequest = true;
       })
-
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orderRequest = false;
 
-        const order = action.payload;
-
         state.orderModalData = {
-          _id: order._id,
-          number: order.number,
-          name: order.name,
-          status: order.status,
-          createdAt: order.createdAt,
-          updatedAt: order.updatedAt,
+          ...action.payload,
           ingredients: []
         };
       })
-
       .addCase(createOrder.rejected, (state) => {
         state.orderRequest = false;
       })
-
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.currentOrder = action.payload;
       });

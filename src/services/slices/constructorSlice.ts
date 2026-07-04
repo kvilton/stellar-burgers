@@ -13,7 +13,7 @@ const initialState: TConstructorState = {
 };
 
 const constructorSlice = createSlice({
-  name: 'constructor',
+  name: 'burgerConstructor',
   initialState,
   reducers: {
     addIngredient: {
@@ -38,6 +38,26 @@ const constructorSlice = createSlice({
       );
     },
 
+    moveIngredientUp: (state, action: PayloadAction<number>) => {
+      const i = action.payload;
+      if (i > 0) {
+        [state.ingredients[i - 1], state.ingredients[i]] = [
+          state.ingredients[i],
+          state.ingredients[i - 1]
+        ];
+      }
+    },
+
+    moveIngredientDown: (state, action: PayloadAction<number>) => {
+      const i = action.payload;
+      if (i < state.ingredients.length - 1) {
+        [state.ingredients[i + 1], state.ingredients[i]] = [
+          state.ingredients[i],
+          state.ingredients[i + 1]
+        ];
+      }
+    },
+
     clearConstructor: (state) => {
       state.bun = null;
       state.ingredients = [];
@@ -45,7 +65,12 @@ const constructorSlice = createSlice({
   }
 });
 
-export const { addIngredient, removeIngredient, clearConstructor } =
-  constructorSlice.actions;
+export const {
+  addIngredient,
+  removeIngredient,
+  moveIngredientUp,
+  moveIngredientDown,
+  clearConstructor
+} = constructorSlice.actions;
 
 export default constructorSlice.reducer;
