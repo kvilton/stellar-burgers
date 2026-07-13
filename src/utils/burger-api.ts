@@ -61,14 +61,10 @@ type TIngredientsResponse = TServerResponse<{
   data: TIngredient[];
 }>;
 
-type TFeedsResponse = TServerResponse<{
+export type TFeedsResponse = TServerResponse<{
   orders: TOrder[];
   total: number;
   totalToday: number;
-}>;
-
-type TOrdersResponse = TServerResponse<{
-  data: TOrder[];
 }>;
 
 export const getIngredientsApi = () =>
@@ -106,7 +102,7 @@ type TOwner = {
   updatedAt: string;
 };
 
-type TNewOrder = {
+export type TNewOrder = {
   _id: string;
   status: string;
   name: string;
@@ -133,7 +129,9 @@ export const orderBurgerApi = (data: string[]) =>
       ingredients: data
     })
   }).then((data) => {
-    if (data?.success) return data;
+    if (data?.success) {
+      return data;
+    }
     return Promise.reject(data);
   });
 

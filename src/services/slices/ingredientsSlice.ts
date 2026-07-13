@@ -1,46 +1,61 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getIngredientsApi } from '../../utils/burger-api';
-import { TIngredient } from '@utils-types';
+import { TIngredient } from '../../utils/types';
 
-export const fetchIngredients = createAsyncThunk(
-  'ingredients/fetchAll',
-  async () => getIngredientsApi()
-);
-
-type TIngredientsState = {
+interface IIngredientsState {
   ingredients: TIngredient[];
   isLoading: boolean;
   error: string | null;
-};
+}
 
-const initialState: TIngredientsState = {
+export const initialState: IIngredientsState = {
   ingredients: [],
   isLoading: false,
   error: null
 };
 
-const ingredientsSlice = createSlice({
+export const getIngredients = createAsyncThunk(
+  'ingredients/fetchIngredients',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await getIngredientsApi();
+      return res;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
   reducers: {},
+  selectors: {
+    ingredientsSelector: (state: IIngredientsState) => state.ingredients,
+    loadingSelector: (state: IIngredientsState) => state.isLoading,
+    errorSelector: (state: IIngredientsState) => state.error
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIngredients.pending, (state) => {
+      .addCase(getIngredients.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-
-      .addCase(fetchIngredients.fulfilled, (state, action) => {
+      .addCase(
+        getIngredients.fulfilled,
+        (state, action: PayloadAction<TIngredient[]>) => {
+          state.isLoading = false;
+          state.ingredients = action.payload;
+        }
+      )
+      .addCase(getIngredients.rejected, (state, action) => {
         state.isLoading = false;
-        state.ingredients = action.payload;
-      })
-
-      .addCase(fetchIngredients.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message ?? 'Ошибка загрузки';
+        state.error = action.error.message || 'Ошибка загрузки ингредиентов';
       });
   }
 });
+
+export const { ingredientsSelector, loadingSelector, errorSelector } =
+  ingredientsSlice.selectors;
 
 export default ingredientsSlice.reducer;
