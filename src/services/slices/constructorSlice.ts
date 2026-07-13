@@ -7,7 +7,7 @@ type TConstructorState = {
   ingredients: TConstructorIngredient[];
 };
 
-const initialState: TConstructorState = {
+export const initialState: TConstructorState = {
   bun: null,
   ingredients: []
 };
@@ -39,21 +39,23 @@ const constructorSlice = createSlice({
     },
 
     moveIngredientUp: (state, action: PayloadAction<number>) => {
-      const i = action.payload;
-      if (i > 0) {
-        [state.ingredients[i - 1], state.ingredients[i]] = [
-          state.ingredients[i],
-          state.ingredients[i - 1]
+      const index = action.payload;
+
+      if (index > 0) {
+        [state.ingredients[index - 1], state.ingredients[index]] = [
+          state.ingredients[index],
+          state.ingredients[index - 1]
         ];
       }
     },
 
     moveIngredientDown: (state, action: PayloadAction<number>) => {
-      const i = action.payload;
-      if (i < state.ingredients.length - 1) {
-        [state.ingredients[i + 1], state.ingredients[i]] = [
-          state.ingredients[i],
-          state.ingredients[i + 1]
+      const index = action.payload;
+
+      if (index < state.ingredients.length - 1) {
+        [state.ingredients[index + 1], state.ingredients[index]] = [
+          state.ingredients[index],
+          state.ingredients[index + 1]
         ];
       }
     },
