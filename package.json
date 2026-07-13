@@ -26,6 +26,8 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
 
+    "@playwright/test": "^1.61.1",
+
     "@storybook/addon-essentials": "^7.6.10",
     "@storybook/addon-interactions": "^7.6.10",
     "@storybook/addon-links": "^7.6.10",
@@ -94,6 +96,7 @@
   "scripts": {
     "start": "webpack serve --mode=development",
     "test": "jest",
+    "test:playwright": "playwright test",
     "build": "webpack --mode=production",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
