@@ -146,16 +146,22 @@ test.describe('Конструктор бургеров с HAR', () => {
 
     await expect(page.getByTestId('order-number')).toHaveText('8459');
 
-    await page.getByTestId('modal-close').click();
+await page.getByTestId('modal-close').click();
 
-    await expect(page.getByTestId('modal')).not.toBeVisible();
+await expect(page.getByTestId('modal')).not.toBeVisible();
 
-    await expect(page.getByText('Выберите булки').first()).toBeVisible();
+const constructor = page.getByTestId('burger-constructor');
 
-    await expect(page.getByText('Выберите начинку')).toBeVisible();
+await expect(
+  constructor.getByText('Выберите булки').first()
+).toBeVisible();
 
-    await context.clearCookies();
+await expect(
+  constructor.getByText('Выберите начинку')
+).toBeVisible();
 
-    await page.evaluate(() => localStorage.clear());
+await context.clearCookies();
+
+await page.evaluate(() => localStorage.clear());
   });
 });
