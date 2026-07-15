@@ -14,7 +14,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { useDispatch } from '../../services/store';
 import { checkUserAuth } from '../../services/slices/userSlice';
-import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { getIngredients } from '../../services/slices/ingredientsSlice';
 import { ProtectedRoute } from '../protected-route';
 import styles from './app.module.css';
 
@@ -28,7 +28,7 @@ const App = () => {
   const backgroundLocation = location.state?.background;
 
   useEffect(() => {
-    dispatch(fetchIngredients());
+    dispatch(getIngredients());
     dispatch(checkUserAuth());
   }, [dispatch]);
 

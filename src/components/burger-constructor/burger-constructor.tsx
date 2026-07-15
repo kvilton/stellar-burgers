@@ -7,7 +7,7 @@ import { TConstructorIngredient } from '@utils-types';
 import { useDispatch, useSelector } from '../../services/store';
 import { clearConstructor } from '../../services/slices/constructorSlice';
 import {
-  createOrder,
+  orderBurger,
   clearOrderModalData
 } from '../../services/slices/orderSlice';
 
@@ -16,10 +16,15 @@ export const BurgerConstructor: FC = () => {
   const navigate = useNavigate();
 
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
+
   const { orderRequest, orderModalData } = useSelector((state) => state.order);
+
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
-  const constructorItems = { bun, ingredients };
+  const constructorItems = {
+    bun,
+    ingredients
+  };
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
@@ -31,11 +36,11 @@ export const BurgerConstructor: FC = () => {
 
     const ingredientIds = [
       constructorItems.bun._id,
-      ...constructorItems.ingredients.map((i) => i._id),
+      ...constructorItems.ingredients.map((ingredient) => ingredient._id),
       constructorItems.bun._id
     ];
 
-    dispatch(createOrder(ingredientIds))
+    dispatch(orderBurger(ingredientIds))
       .unwrap()
       .then(() => {
         dispatch(clearConstructor());
